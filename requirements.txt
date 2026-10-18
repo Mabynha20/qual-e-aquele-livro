@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1
+sentence-transformers==6.1.0
+pandas==3.0.6
+pyarrow==26.0.0
+matplotlib==3.11.2
+rank-bm25==0.2.2
+jupyter==1.1.1
+ipykernel==7.4.0

@@ -1,0 +1,18 @@
+# Ambiente virtual
+.venv/
+
+# Dados e modelos (pesados; não vão para o GitHub)
+data/
+models/
+*.pt
+*.bin
+*.safetensors
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Sistema / editor
+.vscode/
+Thumbs.db

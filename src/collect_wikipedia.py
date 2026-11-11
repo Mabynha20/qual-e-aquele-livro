@@ -91,7 +91,7 @@ def api_query(params):
 # ---------------------------------------------------------------------------
 
 def list_titles_for_year(year):
-    """Retorna os títulos dos artigos em `Category:{year} novels` e subcategorias."""
+    
     root = f"Category:{year} novels"
     queue = [(root, 0)]
     seen = {root}
@@ -107,9 +107,9 @@ def list_titles_for_year(year):
         }
         for result in api_query(params):
             for member in result.get("categorymembers", []):
-                if member["ns"] == 0:  # artigo
+                if member["ns"] == 0:  
                     titles.add(member["title"])
-                elif (member["ns"] == 14  # subcategoria
+                elif (member["ns"] == 14  
                       and depth < MAX_DEPTH
                       and member["title"] not in seen
                       and not SKIP_CATEGORY.search(member["title"])):
@@ -119,18 +119,18 @@ def list_titles_for_year(year):
 
 
 def collect_titles(years):
-    """Carrega data/raw/titles.json e coleta só os anos que ainda faltam."""
+    
     if TITLES_FILE.exists():
         state = json.loads(TITLES_FILE.read_text(encoding="utf-8"))
     else:
-        state = {"years_done": [], "titles": {}}  # titles: título -> ano
+        state = {"years_done": [], "titles": {}}  
 
     for year in years:
         if year in state["years_done"]:
             continue
         found = list_titles_for_year(year)
         for title in found:
-            state["titles"].setdefault(title, year)  # fica o primeiro ano encontrado
+            state["titles"].setdefault(title, year)  
         state["years_done"].append(year)
         TITLES_FILE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"  {year}: {len(found)} artigos")

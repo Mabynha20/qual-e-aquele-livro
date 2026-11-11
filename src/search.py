@@ -9,6 +9,7 @@ Todos têm a mesma interface:
 Busca rápida pelo terminal (na raiz do projeto, com a .venv ativa):
     python src/search.py "girl becomes a dragon rider at a deadly war college"
     python src/search.py "girl becomes a dragon rider" --method bm25
+    python src/search.py "menina que vira cavaleira de dragão"   # em PT: traduz antes de buscar
 """
 
 import argparse
@@ -235,11 +236,12 @@ class HybridSearcher:
 
 def main():
     parser = argparse.ArgumentParser(description="Busca livros por uma descrição vaga.")
-    parser.add_argument("query", help="descrição do livro (em inglês, por enquanto)")
+    parser.add_argument("query", help="descrição do livro, em inglês ou português")
     parser.add_argument("--method", choices=["hybrid", "embeddings", "bm25"], default="hybrid")
     parser.add_argument("--model", default=None,
                         help="modelo de embeddings (padrão: models/minilm-livros se existir, senão o original)")
     parser.add_argument("-k", type=int, default=5, help="quantos livros mostrar")
+    parser.add_argument("--no-translate", action="store_true", help="não traduzir consultas em português")
     args = parser.parse_args()
 
     model = args.model or (str(FINETUNED) if FINETUNED.is_dir() else DEFAULT_MODEL)
@@ -250,7 +252,15 @@ def main():
         searcher = EmbeddingSearcher(books, model)
     else:
         searcher = HybridSearcher(books, model)
-    results = searcher.search(args.query, args.k)
+
+    query = args.query
+    if not args.no_translate:
+        from translate import TranslatingSearcher
+
+        query = TranslatingSearcher(searcher).prepare([args.query])[0]  # PT -> EN; EN passa direto
+        if query != args.query:
+            print(f"\nConsulta traduzida: {query}")
+    results = searcher.search(query, args.k)
     print(f"\n{searcher.name} — \"{args.query}\"\n")
     for rank, row in enumerate(results.itertuples(), start=1):
         print(f"{rank}. {row.title} — {row.author or 'autor desconhecido'} ({row.year})  [nota {row.score:.3f}]")

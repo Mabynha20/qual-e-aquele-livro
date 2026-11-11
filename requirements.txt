@@ -5,6 +5,7 @@ pandas==3.0.6
 pyarrow==26.0.0
 matplotlib==3.11.2
 rank-bm25==0.2.2
+sentencepiece==0.2.3
 requests==2.34.2
 mwparserfromhell==0.7.2
 tqdm==4.70.1

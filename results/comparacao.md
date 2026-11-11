@@ -16,3 +16,7 @@
 | Híbrido (BM25 + minilm-livros) | teste · auto | 1410 | 95.5% | 99.1% | 99.8% | 0.970 |
 | Híbrido (BM25 + minilm-livros) | teste · manual EN | 30 | 40.0% | 70.0% | 86.7% | 0.544 |
 | Híbrido (BM25 + minilm-livros) | teste · manual PT | 30 | 0.0% | 0.0% | 0.0% | 0.005 |
+| Híbrido (BM25 + minilm-livros) + tradução | val · auto | 1396 | 95.1% | 98.7% | 99.3% | 0.967 |
+| Híbrido (BM25 + minilm-livros) + tradução | teste · auto | 1410 | 95.5% | 99.1% | 99.8% | 0.970 |
+| Híbrido (BM25 + minilm-livros) + tradução | teste · manual EN | 30 | 40.0% | 70.0% | 86.7% | 0.544 |
+| Híbrido (BM25 + minilm-livros) + tradução | teste · manual PT | 30 | 43.3% | 70.0% | 80.0% | 0.561 |

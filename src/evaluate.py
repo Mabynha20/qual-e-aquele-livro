@@ -12,7 +12,7 @@ Os resultados são separados por tipo de consulta:
 
 Uso (na raiz do projeto, com a .venv ativa):
     python src/evaluate.py                                  # baselines
-    python src/evaluate.py --model models/minilm-livros     # + modelo treinado e híbrido
+    python src/evaluate.py --model models/minilm-livros     # + modelo treinado, híbrido e híbrido com tradução
 
 Salva a tabela em results/baselines.{csv,md} (ou results/comparacao.{csv,md} com --model).
 """
@@ -24,6 +24,7 @@ import numpy as np
 import pandas as pd
 
 from search import PROCESSED, BM25Searcher, EmbeddingSearcher, HybridSearcher, load_books
+from translate import TranslatingSearcher
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -85,7 +86,8 @@ def main():
     searchers = [bm25, EmbeddingSearcher(books)]
     if args.model:
         tuned = EmbeddingSearcher(books, model_name=args.model)
-        searchers += [tuned, HybridSearcher(books, bm25=bm25, embeddings=tuned)]
+        hybrid = HybridSearcher(books, bm25=bm25, embeddings=tuned)
+        searchers += [tuned, hybrid, TranslatingSearcher(hybrid)]
 
     tables, all_ranks = [], {}
     for searcher in searchers:

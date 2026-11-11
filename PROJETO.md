@@ -18,7 +18,7 @@
 **Decisões tomadas:**
 - **Ideia escolhida:** busca semântica de livros por descrição vaga (ideia 5). A 4 (recomendador) foi descartada por ser muito comum em portfólios; a 5 é mais original.
 - **Framework:** PyTorch (recomendado; falta a confirmação final).
-- **Dados:** CMU Book Summary Dataset (~16 mil resumos de enredo com título, autor e gênero).
+- **Dados:** **base própria coletada da Wikipédia** (opção A), com foco em livros **contemporâneos** (YA, fantasia/romantasy, romance, thriller, os populares do BookTok). Clássicos e literatura antiga podem aparecer, mas não são o foco. O CMU Book Summary Dataset (~16 mil resumos, até 2012) entra só como complemento para livros mais antigos. O texto usado é o **resumo de enredo** (seção "Plot"), não a sinopse de contracapa, porque o leitor lembra de detalhes da história toda.
 - **Hardware:** **tudo roda localmente na CPU**, inclusive o treino (Parte 4). O Colab foi descartado por preferência da autora. Estratégias para a CPU: modelo pequeno (ex.: all-MiniLM-L6-v2), truncar textos (~256 tokens nos resumos, ~64 nas consultas), validar primeiro com um subconjunto, salvar checkpoints e ajustar `torch.set_num_threads()`. `torch-directml` (GPU integrada AMD) foi avaliado e não será usado por ora: é experimental e o ganho é incerto.
 
 ## Roteiro (do começo à publicação)
@@ -28,11 +28,14 @@
 - **Tarefas:** criar a estrutura de pastas (`data/`, `notebooks/`, `src/`, `app/`); criar o ambiente virtual e instalar PyTorch (CPU), sentence-transformers, pandas e Jupyter; fazer `git init`, `.gitignore` (ignorar `data/` e modelos) e o repositório no GitHub.
 - **Entregável:** repositório no GitHub com a estrutura e o `requirements.txt`.
 
-### Parte 1: Dados e análise exploratória
-- **Objetivo:** conhecer e limpar o dataset.
-- **Tarefas:** baixar o CMU Book Summary Dataset; carregar no pandas (o gênero vem em JSON); fazer a EDA (tamanho dos resumos em palavras/tokens, gêneros mais comuns, nulos, duplicados); limpar e salvar em Parquet.
-- **Entregável:** `notebooks/01_eda.ipynb` + dataset limpo.
-- **Aprendizado:** tokenização e o porquê de truncar textos.
+### Parte 1: Coleta, dados e análise exploratória
+- **Objetivo:** montar a base de livros contemporâneos e conhecê-la.
+- **Tarefas:**
+  - **1a. Coleta (`src/collect_wikipedia.py`):** listar romances pelas categorias da Wikipédia por ano (`Category:{ano} novels` e subcategorias, ex.: `2023 American novels`, `2023 fantasy novels`) e por gênero (ex.: `American young adult novels`, `Young adult fantasy novels`); baixar a seção "Plot"/"Plot summary" de cada página pela API (identificando o projeto no User-Agent e com pausa entre as requisições); guardar título, autor, ano, categorias e resumo; salvar o bruto em `data/raw/`.
+  - **1b. Complemento:** baixar o CMU Book Summary Dataset (`http://www.cs.cmu.edu/~dbamman/data/booksummaries.tar.gz`) e juntar, removendo duplicados.
+  - **1c. EDA (`notebooks/01_eda.ipynb`):** tamanho dos resumos em palavras/tokens, distribuição por ano e gênero, nulos, duplicados; limpar e salvar em Parquet.
+- **Entregável:** script de coleta + `notebooks/01_eda.ipynb` + dataset limpo.
+- **Aprendizado:** coleta de dados via API (paginação, *rate limit*, boas práticas), tokenização e o porquê de truncar textos.
 
 ### Parte 2: Divisão dos dados e conjunto de avaliação
 - **Objetivo:** definir *como* vamos medir se a busca funciona, antes de construir qualquer modelo.
@@ -82,13 +85,20 @@
 | 2026-10-18 | Registrados o perfil da autora e o hardware; definido CPU local + Colab para o treino | A máquina não tem GPU NVIDIA; a autora já tem base de Python/ML |
 | 2026-10-18 | Treino passa a ser 100% local na CPU (Colab descartado) | A autora prefere treinar no próprio PC; o fine-tuning de um modelo pequeno é viável na CPU |
 | 2026-10-18 | As 5 fases viraram um roteiro detalhado de 9 partes (0 a 8), até a publicação no LinkedIn; incluídos uma baseline BM25 e uma etapa de avaliação antes dos modelos | A autora pediu a divisão completa do trabalho; medir antes de modelar torna os resultados confiáveis |
-| 2026-10-18 | Parte 0 iniciada: a autora executa os comandos à mão (Claude fornece o passo a passo); confirmados PyTorch CPU e repositório sugerido `qual-e-aquele-livro` | A autora prefere rodar os comandos para fixar o aprendizado |
+| 2026-10-18 | Parte 0 iniciada: os comandos são executados à mão, passo a passo; confirmados PyTorch CPU e repositório sugerido `qual-e-aquele-livro` | A autora prefere rodar os comandos para fixar o aprendizado |
 | 2026-10-18 | Pasta do projeto renomeada de `projeto legal` para `projeto_busca_semantica` (feito pela autora, com o VS Code fechado) | Nome mais descritivo e sem espaço; o Windows bloqueava a renomeação com a pasta aberta |
 | 2026-10-18 | Parte 0: pastas e `.venv` criadas; `Set-ExecutionPolicy RemoteSigned` (CurrentUser) para ativar a venv; instalados torch 2.14.1+cpu, sentence-transformers 6.1.0, pandas 3.0.6 e demais libs | Ambiente pronto para começar |
 | 2026-10-18 | `requirements.txt` refeito à mão (enxuto, só dependências diretas, com `--extra-index-url` da CPU do PyTorch) em vez do `pip freeze` | O `>` do PowerShell 5.1 gerou UTF-16; o freeze listava 130+ pacotes; o índice CPU evita baixar o torch com CUDA no HF Spaces |
+| 2026-10-18 | **Parte 0 concluída**: Git configurado, primeiro commit e repositório público criado com `gh repo create` (https://github.com/Mabynha20/qual-e-aquele-livro) | O GitHub CLI já estava instalado e logado; criar o repositório pelo terminal foi mais rápido |
+| 2026-10-18 | Fonte de dados trocada: base própria da Wikipédia focada em livros contemporâneos (opção A); CMU vira complemento. Parte 1 ganhou a etapa de coleta | O CMU vai só até 2012 e não tem os livros atuais do BookTok (foco da autora). Teste: 7 de 8 títulos do BookTok (Fourth Wing, It Ends with Us, Evelyn Hugo, The Cruel Prince etc.) têm seção "Plot" na Wikipédia. Goodreads (opção B) foi descartado por trazer sinopse de contracapa e ir só até ~2017-2020 |
+| 2026-11-11 | Escopo da coleta: romances de 2000 a 2026, **todos os gêneros** (gênero vira etiqueta/filtro, não critério de coleta) | A Wikipédia classifica gêneros de forma irregular (ex.: Evelyn Hugo está como "historical fiction"); filtrar na coleta perderia livros do foco |
+| 2026-11-11 | Escrito e testado `src/collect_wikipedia.py`: percorre `Category:{ano} novels` + subcategorias (até 3 níveis, sem graphic/light novels), baixa o wikitexto em lotes de 50, extrai a seção de enredo, o infobox e as categorias; retomável. Novas libs: `requests`, `mwparserfromhell`, `tqdm` | Teste com 2023: 313 romances listados, 77% com enredo; Fourth Wing, Evelyn Hugo, Six of Crows etc. extraídos corretamente. Corte mínimo de 30 palavras na coleta; o corte final fica para a EDA. User-Agent usa a URL do repositório como contato |
+| 2026-11-11 | Limitação encontrada: livros que só têm página de **série** na Wikipédia (ACOTAR, The Cruel Prince → "The Folk of the Air") não entram pela coleta por ano | Fica para a Parte 1b, com uma lista curada de títulos do BookTok |
 
 ## Próximos passos
 
-- [x] Parte 0: pastas, `.venv`, instalação (PyTorch CPU + libs).
-- [ ] Parte 0: `requirements.txt` (UTF-8, enxuto), `.gitignore`, `git init`, primeiro commit e push para o GitHub (em andamento, com a autora).
-- [ ] Parte 1: baixar e explorar o CMU Book Summary Dataset.
+- [x] Parte 0: pastas, `.venv`, instalação, `requirements.txt`, `.gitignore`, primeiro commit e push. Repositório: https://github.com/Mabynha20/qual-e-aquele-livro
+- [x] Parte 1a: escopo definido (2000-2026, todos os gêneros) e `src/collect_wikipedia.py` escrito e testado.
+- [ ] Parte 1a: a autora roda a coleta completa (`python src/collect_wikipedia.py`).
+- [ ] Parte 1b: complemento com o CMU + lista curada de livros/séries do BookTok que só têm página de série (ex.: ACOTAR, The Folk of the Air).
+- [ ] Parte 1c: EDA (inclui decidir o corte mínimo de palavras do resumo).

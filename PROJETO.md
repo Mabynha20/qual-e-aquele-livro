@@ -94,11 +94,15 @@
 | 2026-11-11 | Escopo da coleta: romances de 2000 a 2026, **todos os gêneros** (gênero vira etiqueta/filtro, não critério de coleta) | A Wikipédia classifica gêneros de forma irregular (ex.: Evelyn Hugo está como "historical fiction"); filtrar na coleta perderia livros do foco |
 | 2026-11-11 | Escrito e testado `src/collect_wikipedia.py`: percorre `Category:{ano} novels` + subcategorias (até 3 níveis, sem graphic/light novels), baixa o wikitexto em lotes de 50, extrai a seção de enredo, o infobox e as categorias; retomável. Novas libs: `requests`, `mwparserfromhell`, `tqdm` | Teste com 2023: 313 romances listados, 77% com enredo; Fourth Wing, Evelyn Hugo, Six of Crows etc. extraídos corretamente. Corte mínimo de 30 palavras na coleta; o corte final fica para a EDA. User-Agent usa a URL do repositório como contato |
 | 2026-11-11 | Limitação encontrada: livros que só têm página de **série** na Wikipédia (ACOTAR, The Cruel Prince → "The Folk of the Air") não entram pela coleta por ano | Fica para a Parte 1b, com uma lista curada de títulos do BookTok |
+| 2026-11-11 | **Coleta completa (Parte 1a)**: 14.199 romances listados (2000-2026), 10.552 com enredo (74%), em ~9 min. Sem duplicados; resumo mediano de 220 palavras (mín. 30, máx. 10.117); 13% sem autor e 21% sem gênero no infobox. Dados em `data/raw/` (fora do Git) | Base ~2x maior que o estimado. Checagem com 38 títulos populares do BookTok: 30 presentes (Fourth Wing, Onyx Storm, It Ends with Us, Evelyn Hugo, The Housemaid, Lessons in Chemistry...); faltam ACOTAR, Throne of Glass, The Cruel Prince, The Inheritance Games, Babel, The Atlas Six, Ninth House e Haunting Adeline |
+| 2026-11-11 | Parte 1b: criados `lists/booktok_titles.txt` (56 títulos, formato `Título \| Autor`, editável) e `src/collect_extra.py`. Ele tenta a página exata e depois a busca da Wikipédia; valida pelo sobrenome do autor; lê os blocos `{{Book list}}` das páginas de série (pega a série inteira); descarta páginas de filme/TV; não duplica (título + autor). Saída: `data/raw/extra_books.jsonl` | Teste: +19 livros (ACOTAR 1-5, Throne of Glass 0-7, Crescent City 1-3, The Folk of the Air 1-3); 34 já estavam na base (Babel e Mistborn com o título completo); 22 sem página de enredo na Wikipédia (ex.: Caraval, Divine Rivals, Haunting Adeline, Ugly Love) ou só com página da adaptação (The Hating Game, Reminders of Him). Ninth House tem a seção de sinopse vazia. Resumos das séries são mais curtos (44-475 palavras) |
 
 ## Próximos passos
 
 - [x] Parte 0: pastas, `.venv`, instalação, `requirements.txt`, `.gitignore`, primeiro commit e push. Repositório: https://github.com/Mabynha20/qual-e-aquele-livro
 - [x] Parte 1a: escopo definido (2000-2026, todos os gêneros) e `src/collect_wikipedia.py` escrito e testado.
-- [ ] Parte 1a: a autora roda a coleta completa (`python src/collect_wikipedia.py`).
-- [ ] Parte 1b: complemento com o CMU + lista curada de livros/séries do BookTok que só têm página de série (ex.: ACOTAR, The Folk of the Air).
+- [x] Parte 1a: coleta completa rodada: 14.199 romances listados, **10.552 com enredo**.
+- [x] Parte 1b: `src/collect_extra.py` + `lists/booktok_titles.txt` escritos e testados.
+- [x] Parte 1b: `python src/collect_extra.py` rodado: +19 livros em `data/raw/extra_books.jsonl` (base total: 10.571). A lista pode crescer depois, inclusive com títulos do BookTok BR.
+- [ ] Parte 1b (opcional): complemento com o CMU para livros anteriores a 2000.
 - [ ] Parte 1c: EDA (inclui decidir o corte mínimo de palavras do resumo).

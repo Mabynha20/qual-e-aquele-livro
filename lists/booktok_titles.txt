@@ -1,0 +1,69 @@
+# Livros que precisam estar na base (populares no BookTok e afins).
+# Um por linha, no formato:  Título original | Autor
+# O autor é opcional, mas ajuda a achar a página certa e evita confusão com
+# filmes ou outros artigos de mesmo nome. Linhas começando com # são ignoradas.
+# Livros que já estão na base são apenas listados como "já na base".
+
+# Romantasy e fantasia
+A Court of Thorns and Roses | Sarah J. Maas
+Throne of Glass | Sarah J. Maas
+House of Earth and Blood | Sarah J. Maas
+Fourth Wing | Rebecca Yarros
+The Cruel Prince | Holly Black
+From Blood and Ash | Jennifer L. Armentrout
+Serpent & Dove | Shelby Mahurin
+The Serpent and the Wings of Night | Carissa Broadbent
+Quicksilver | Callie Hart
+Lightlark | Alex Aster
+Divine Rivals | Rebecca Ross
+Caraval | Stephanie Garber
+Once Upon a Broken Heart | Stephanie Garber
+Red Queen | Victoria Aveyard
+Shatter Me | Tahereh Mafi
+Iron Widow | Xiran Jay Zhao
+The Priory of the Orange Tree | Samantha Shannon
+The Atlas Six | Olivie Blake
+Ninth House | Leigh Bardugo
+Babel | R. F. Kuang
+The Poppy War | R. F. Kuang
+Vicious | V. E. Schwab
+The Night Circus | Erin Morgenstern
+Mistborn | Brandon Sanderson
+The Way of Kings | Brandon Sanderson
+The Name of the Wind | Patrick Rothfuss
+The Lightning Thief | Rick Riordan
+
+# YA e distopia
+The Ballad of Songbirds and Snakes | Suzanne Collins
+Sunrise on the Reaping | Suzanne Collins
+The Selection | Kiera Cass
+The Inheritance Games | Jennifer Lynn Barnes
+One of Us Is Lying | Karen M. McManus
+They Both Die at the End | Adam Silvera
+Aristotle and Dante Discover the Secrets of the Universe | Benjamin Alire Sáenz
+The Summer I Turned Pretty | Jenny Han
+To All the Boys I've Loved Before | Jenny Han
+A Thousand Boy Kisses | Tillie Cole
+
+# Romance
+Ugly Love | Colleen Hoover
+Reminders of Him | Colleen Hoover
+November 9 | Colleen Hoover
+The Hating Game | Sally Thorne
+Book Lovers | Emily Henry
+Happy Place | Emily Henry
+Funny Story | Emily Henry
+Better Than the Movies | Lynn Painter
+Twisted Love | Ana Huang
+Icebreaker | Hannah Grace
+Things We Never Got Over | Lucy Score
+The Duke and I | Julia Quinn
+Haunting Adeline | H. D. Carlton
+
+# Thriller e ficção contemporânea
+The Silent Patient | Alex Michaelides
+Gone Girl | Gillian Flynn
+Yellowface | R. F. Kuang
+A Little Life | Hanya Yanagihara
+The Midnight Library | Matt Haig
+Tomorrow, and Tomorrow, and Tomorrow | Gabrielle Zevin

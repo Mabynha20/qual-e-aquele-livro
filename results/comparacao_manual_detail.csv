@@ -1,0 +1,61 @@
+lang,query,livro,BM25,Embeddings (all-MiniLM-L6-v2),Embeddings (minilm-livros)
+pt,menina frágil que vira cavaleira de dragão numa escola militar onde os alunos morrem,Fourth Wing,301,596,238
+en,"girl who is too weak for the army but gets two dragons, one of them a baby golden one",Fourth Wing,39,33,3
+pt,caçadora pobre mata um lobo na floresta e é levada como prisioneira para o mundo das fadas por um ser que usa máscara,A Court of Thorns and Roses,440,6227,5131
+en,"human girl taken to a faerie land as payment for killing a wolf, falls for the masked lord, then has to survive deadly trials under the mountain",A Court of Thorns and Roses,1,11,1
+pt,"florista que se apaixona por um neurocirurgião que se mostra violento, e o primeiro amor da adolescência reaparece",It Ends with Us,406,3918,2724
+en,"woman opens a flower shop and marries a charming doctor who turns abusive, she has to break the cycle her mother lived",It Ends with Us,16,78,3
+pt,atriz velha de hollywood conta para uma jornalista desconhecida a história dos vários casamentos e do amor secreto da vida dela,The Seven Husbands of Evelyn Hugo,222,573,18
+en,"aging film star gives her final interview revealing that the great love of her life was a woman, not any of her husbands",The Seven Husbands of Evelyn Hugo,2,7,1
+pt,"pintora atira no marido e nunca mais fala, e um psicoterapeuta fica obcecado em fazer ela falar",The Silent Patient,202,1519,2188
+en,"woman stops speaking after killing her husband and a therapist takes a job at the clinic to treat her, big twist about who he really is",The Silent Patient,4,50,64
+pt,"romance entre dois guerreiros gregos contado pelo príncipe exilado que cresce ao lado do semideus, até a guerra de troia",The Song of Achilles,367,445,128
+en,gay retelling of the trojan war told by the exiled boy who loves the greatest warrior,The Song of Achilles,10,6,10
+pt,"bruxa filha do deus do sol exilada numa ilha, onde transforma marinheiros em porcos",Circe,49,1517,630
+en,"the witch from the odyssey tells her own story, banished to an island, turns men into pigs",Circe,4,2,1
+pt,grupo de jovens criminosos contratado para um assalto impossível numa prisão de gelo,Six of Crows,294,4363,3044
+en,"heist fantasy with a crew of teenage thieves led by a con man with a cane, breaking someone out of an impenetrable prison",Six of Crows,41,1964,38
+pt,garota se oferece no lugar da irmã mais nova para um programa de tv em que adolescentes lutam até a morte,The Hunger Games,491,1162,2051
+en,"televised fight to the death between kids from poor districts, she volunteers to save her little sister",The Hunger Games,1,12,1
+pt,garota se muda para uma cidade chuvosa e se apaixona por um colega de escola que é vampiro e brilha no sol,Twilight,479,113,17
+en,teen moves to a rainy town and falls for a mysterious pale classmate who turns out to be a vampire,Twilight,5,25,16
+pt,dois adolescentes com câncer se conhecem num grupo de apoio e viajam para amsterdã para conhecer o autor do livro favorito dela,The Fault in Our Stars,424,115,27
+en,two teens with cancer fall in love and travel abroad to meet a reclusive author who turns out to be a jerk,The Fault in Our Stars,6,1401,393
+pt,filho da presidente dos estados unidos e um príncipe britânico que se odeiam acabam namorando escondido,"Red, White & Royal Blue",226,75,442
+en,the us president's son has to fake a friendship with a british prince after a wedding cake disaster and they fall in love,"Red, White & Royal Blue",1,1,1
+pt,doutoranda finge namorar um professor ranzinza para convencer a amiga de que superou o ex,The Love Hypothesis,179,3786,2617
+en,phd student kisses a random professor to prove she is dating someone and they start a fake relationship,The Love Hypothesis,1,5,1
+pt,estudante investiga um assassinato antigo da cidade como trabalho de escola porque acha que o acusado era inocente,A Good Girl's Guide to Murder,651,3086,958
+en,"high school senior reopens a five year old murder case for her school project, convinced the boyfriend didn't do it",A Good Girl's Guide to Murder,16,10,40
+pt,"garota rica passa os verões na ilha particular da família, sofre um acidente que não lembra e no fim descobre que os primos morreram num incêndio",We Were Liars,402,3910,916
+en,"wealthy family's private island, girl with amnesia after an accident, twist ending about a fire",We Were Liars,16,41,26
+pt,humana criada entre as fadas depois que os pais foram assassinados vira espiã na corte e odeia o príncipe mais cruel,The Cruel Prince,522,6994,2970
+en,mortal girl raised in the faerie court by the man who murdered her parents schemes for power and ends up controlling the wicked prince,The Cruel Prince,73,1178,182
+pt,assassina tirada de uma mina de sal para competir num torneio e virar a campeã do rei,Throne of Glass,498,91,44
+en,teenage assassin freed from a prison mine to fight in a deadly competition to become the king's champion,Throne of Glass,1,1,1
+pt,"jovem francesa faz um pacto com um deus da escuridão para viver para sempre, mas ninguém consegue lembrar dela",The Invisible Life of Addie LaRue,74,1008,2784
+en,"woman makes a deal to live forever but is forgotten by everyone she meets, until centuries later one boy remembers her",The Invisible Life of Addie LaRue,5,871,207
+pt,escritora contratada para terminar os livros de uma autora acamada encontra uma autobiografia assustadora na casa,Verity,310,4372,1077
+en,struggling writer hired to finish a famous author's series finds a disturbing confession manuscript in her house,Verity,1,242,7
+pt,mulher que acabou de sair da prisão vira empregada de uma família rica e a patroa tem um comportamento muito estranho,The Housemaid,497,1004,4539
+en,"woman with a criminal past takes a job as a live-in maid, the wife seems crazy but the husband is the real danger",The Housemaid,5,760,170
+pt,"no aniversário de casamento a esposa desaparece e o marido vira suspeito, mas ela armou tudo",Gone Girl,639,7924,5337
+en,"wife vanishes on their anniversary, the husband looks guilty, diary chapters, she faked her own disappearance",Gone Girl,1,258,2
+pt,"sociedade dividida em grupos por virtude, a garota faz o teste e não se encaixa em nenhum, aí escolhe o grupo dos corajosos",Divergent,386,133,187
+en,"dystopian chicago where teens choose a faction at sixteen, she secretly fits more than one and joins the fearless one",Divergent,2,5,10
+pt,mulher tenta se matar e acorda numa biblioteca onde cada livro é uma versão da vida dela com escolhas diferentes,The Midnight Library,253,108,850
+en,between life and death she gets to try out all the other lives she could have lived,The Midnight Library,412,1,1
+pt,química brilhante nos anos 60 é demitida e vira apresentadora de um programa de culinária na tv ensinando ciência,Lessons in Chemistry,623,2785,1517
+en,female scientist in the 1960s ends up hosting a tv cooking show and teaches housewives chemistry,Lessons in Chemistry,5,42,3
+pt,"banda de rock dos anos 70 contada em formato de entrevista, a cantora e o vocalista têm uma tensão romântica e a banda acaba no auge",Daisy Jones & the Six,861,1994,362
+en,oral history of a 70s rock band that broke up at the peak of their fame,Daisy Jones & the Six,1,15,12
+pt,"órfão chinês levado para oxford para estudar tradução, onde a magia funciona com prata e palavras, e ele se revolta contra o império","Babel, or the Necessity of Violence",245,265,269
+en,oxford translation institute where enchanted silver bars power the british empire and the students turn to revolution,"Babel, or the Necessity of Violence",1,1,1
+pt,um serviço liga avisando que você vai morrer naquele dia e dois garotos desconhecidos passam o último dia juntos,They Both Die at the End,378,3456,5821
+en,two boys get a call telling them it's their last day alive and they spend it together,They Both Die at the End,2,69,108
+pt,dois mágicos treinados desde crianças para um duelo dentro de um espetáculo que só abre à noite acabam se apaixonando,The Night Circus,299,30,58
+en,"two young magicians bound to a magical competition fall in love, black and white tents that appear without warning",The Night Circus,1,4,1
+pt,o trio larga a escola e fica acampando atrás de objetos que guardam pedaços da alma do vilão,Harry Potter and the Deathly Hallows,400,1158,205
+en,"final book where they skip school to hunt objects containing pieces of the dark lord's soul, ending with a battle at the castle",Harry Potter and the Deathly Hallows,1,1,11
+pt,agente literária durona vai passar o verão numa cidadezinha com a irmã e vive esbarrando no editor rabugento com quem sempre briga,Book Lovers,68,845,2278
+en,"literary agent who is always the city girl that gets dumped for the small town girl, rivals to lovers with a grumpy book editor",Book Lovers,3,357,153

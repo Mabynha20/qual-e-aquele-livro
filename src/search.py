@@ -117,14 +117,21 @@ class EmbeddingSearcher:
     chunk_tokens tokens; a nota do livro é a do seu pedaço mais parecido com a consulta.
     """
 
-    def __init__(self, books, model_name=DEFAULT_MODEL, chunk_tokens=CHUNK_TOKENS, batch_size=32):
+    def __init__(self, books, model_name=DEFAULT_MODEL, chunk_tokens=CHUNK_TOKENS, batch_size=32,
+                 model=None, use_cache=True):
+        """
+        model_name: modelo do Hugging Face ou pasta de um modelo salvo (ex.: o treinado na Parte 4).
+        model:      modelo já carregado (usado na validação durante o treino); dispensa model_name.
+        use_cache:  guarda/reaproveita os embeddings dos pedaços em data/processed/embeddings/.
+        """
         from sentence_transformers import SentenceTransformer  # importa só quando usado (é pesado)
 
         self.books = books
         self.model_name = model_name
         self.name = f"Embeddings ({Path(model_name).name})"
-        self.model = SentenceTransformer(model_name, device="cpu")
+        self.model = model if model is not None else SentenceTransformer(model_name, device="cpu")
         self.batch_size = batch_size
+        self.use_cache = use_cache
 
         max_tokens = min(chunk_tokens, self.model.max_seq_length)
         chunk_book, chunk_text_ = [], []
@@ -137,7 +144,14 @@ class EmbeddingSearcher:
 
     def _encode_chunks(self, chunks):
         """Calcula os embeddings dos pedaços, ou carrega do cache se nada mudou."""
-        digest = hashlib.sha1((self.model_name + "\x00" + "\x00".join(chunks)).encode()).hexdigest()[:12]
+        if not self.use_cache:
+            return self.model.encode(chunks, batch_size=self.batch_size, normalize_embeddings=True,
+                                     convert_to_numpy=True).astype(np.float32)
+        # A chave do cache muda se mudarem o modelo, os pesos (modelo salvo em pasta) ou os pedaços.
+        version = self.model_name
+        if Path(self.model_name).is_dir():
+            version += str(max(f.stat().st_mtime for f in Path(self.model_name).rglob("*") if f.is_file()))
+        digest = hashlib.sha1((version + "\x00" + "\x00".join(chunks)).encode()).hexdigest()[:12]
         cache = EMBEDDINGS_DIR / f"{Path(self.model_name).name}_{digest}.npy"
         if cache.exists():
             print(f"Embeddings carregados do cache: {cache.name}")

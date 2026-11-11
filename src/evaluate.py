@@ -11,11 +11,13 @@ Os resultados são separados por tipo de consulta:
     manual EN/PT:     descrições vagas escritas à mão, mais realistas
 
 Uso (na raiz do projeto, com a .venv ativa):
-    python src/evaluate.py
+    python src/evaluate.py                                  # baselines
+    python src/evaluate.py --model models/minilm-livros     # + modelo treinado
 
-Salva a tabela em results/baselines.csv e results/baselines.md.
+Salva a tabela em results/baselines.{csv,md} (ou results/comparacao.{csv,md} com --model).
 """
 
+import argparse
 from pathlib import Path
 
 import numpy as np
@@ -70,12 +72,21 @@ def to_markdown(table):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Avalia os buscadores.")
+    parser.add_argument("--model", help="pasta de um modelo treinado (Parte 4), comparado com as baselines")
+    args = parser.parse_args()
+    out_name = "comparacao" if args.model else "baselines"
+
     books = load_books()
     queries = pd.read_parquet(PROCESSED / "queries.parquet")
     print(f"{len(books)} livros no índice, {len(queries)} consultas\n")
 
+    makers = [BM25Searcher, EmbeddingSearcher]
+    if args.model:
+        makers.append(lambda b: EmbeddingSearcher(b, model_name=args.model))
+
     tables, all_ranks = [], {}
-    for make in (BM25Searcher, EmbeddingSearcher):
+    for make in makers:
         searcher = make(books)
         print(f"Avaliando {searcher.name}...")
         table, ranks = evaluate(searcher, queries)
@@ -84,9 +95,9 @@ def main():
 
     results = pd.concat(tables, ignore_index=True)
     RESULTS.mkdir(exist_ok=True)
-    results.to_csv(RESULTS / "baselines.csv", index=False)
+    results.to_csv(RESULTS / f"{out_name}.csv", index=False)
     markdown = to_markdown(results)
-    (RESULTS / "baselines.md").write_text(markdown + "\n", encoding="utf-8")
+    (RESULTS / f"{out_name}.md").write_text(markdown + "\n", encoding="utf-8")
     print("\n" + markdown)
 
     # Consultas manuais: em que posição cada método colocou o livro certo
@@ -95,8 +106,8 @@ def main():
         livro=books.loc[queries.loc[manual, "book_id"], "title"].to_numpy(),
         **{name: ranks[manual] for name, ranks in all_ranks.items()},
     )
-    detail.to_csv(RESULTS / "baselines_manual_detail.csv", index=False)
-    print(f"\nPosição do livro certo em cada consulta manual: {RESULTS / 'baselines_manual_detail.csv'}")
+    detail.to_csv(RESULTS / f"{out_name}_manual_detail.csv", index=False)
+    print(f"\nPosição do livro certo em cada consulta manual: {RESULTS / f'{out_name}_manual_detail.csv'}")
 
 
 if __name__ == "__main__":

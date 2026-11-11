@@ -12,3 +12,7 @@
 | Embeddings (minilm-livros) | teste · auto | 1410 | 87.3% | 93.8% | 95.5% | 0.903 |
 | Embeddings (minilm-livros) | teste · manual EN | 30 | 33.3% | 46.7% | 56.7% | 0.407 |
 | Embeddings (minilm-livros) | teste · manual PT | 30 | 0.0% | 0.0% | 0.0% | 0.008 |
+| Híbrido (BM25 + minilm-livros) | val · auto | 1396 | 95.1% | 98.7% | 99.3% | 0.967 |
+| Híbrido (BM25 + minilm-livros) | teste · auto | 1410 | 95.5% | 99.1% | 99.8% | 0.970 |
+| Híbrido (BM25 + minilm-livros) | teste · manual EN | 30 | 40.0% | 70.0% | 86.7% | 0.544 |
+| Híbrido (BM25 + minilm-livros) | teste · manual PT | 30 | 0.0% | 0.0% | 0.0% | 0.005 |

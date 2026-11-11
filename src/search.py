@@ -1,7 +1,8 @@
 """
-Buscadores de livros: BM25 (palavras-chave) e embeddings (busca semântica).
+Buscadores de livros: BM25 (palavras-chave), embeddings (busca semântica) e
+híbrido (os dois juntos).
 
-Os dois têm a mesma interface:
+Todos têm a mesma interface:
     searcher.score(queries) -> matriz (n_consultas x n_livros) com a nota de cada livro
     searcher.search(query, k) -> os k livros mais bem avaliados
 
@@ -22,6 +23,7 @@ from rank_bm25 import BM25Okapi
 ROOT = Path(__file__).resolve().parents[1]
 PROCESSED = ROOT / "data" / "processed"
 EMBEDDINGS_DIR = PROCESSED / "embeddings"
+FINETUNED = ROOT / "models" / "minilm-livros"  # modelo treinado na Parte 4
 
 DEFAULT_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 # Tamanho dos pedaços de resumo. Testado com 256/128/64: pedaços menores "diluem"
@@ -149,8 +151,14 @@ class EmbeddingSearcher:
                                      convert_to_numpy=True).astype(np.float32)
         # A chave do cache muda se mudarem o modelo, os pesos (modelo salvo em pasta) ou os pedaços.
         version = self.model_name
-        if Path(self.model_name).is_dir():
-            version += str(max(f.stat().st_mtime for f in Path(self.model_name).rglob("*") if f.is_file()))
+        model_dir = Path(self.model_name)
+        if model_dir.is_dir():
+            # mesmo modelo com o caminho escrito de outro jeito (absoluto/relativo) = mesmo cache
+            try:
+                version = model_dir.resolve().relative_to(ROOT).as_posix()
+            except ValueError:
+                version = model_dir.resolve().as_posix()
+            version += str(max(f.stat().st_mtime for f in model_dir.rglob("*") if f.is_file()))
         digest = hashlib.sha1((version + "\x00" + "\x00".join(chunks)).encode()).hexdigest()[:12]
         cache = EMBEDDINGS_DIR / f"{Path(self.model_name).name}_{digest}.npy"
         if cache.exists():
@@ -180,16 +188,68 @@ class EmbeddingSearcher:
 
 
 # ---------------------------------------------------------------------------
+# Híbrido
+# ---------------------------------------------------------------------------
+
+def to_ranks(scores):
+    """Posição (1 = melhor) de cada livro no ranking de cada consulta."""
+    order = np.argsort(-scores, axis=1)
+    ranks = np.empty_like(order)
+    np.put_along_axis(ranks, order, np.arange(1, scores.shape[1] + 1), axis=1)
+    return ranks
+
+
+class HybridSearcher:
+    """
+    Junta BM25 e embeddings por Reciprocal Rank Fusion (RRF):
+        nota(livro) = 1 / (k + posição no BM25) + 1 / (k + posição nos embeddings)
+    Usa só as posições, não as notas, porque as escalas dos dois métodos não se
+    comparam. Um livro bem colocado em qualquer um dos dois sobe no resultado.
+    k = 60 é o valor padrão do artigo original (Cormack et al., 2009).
+    """
+
+    def __init__(self, books, model_name=DEFAULT_MODEL, rrf_k=60, bm25=None, embeddings=None):
+        """bm25/embeddings: buscadores já criados (evita recalcular o índice)."""
+        self.books = books
+        self.rrf_k = rrf_k
+        self.bm25 = bm25 if bm25 is not None else BM25Searcher(books)
+        self.embeddings = embeddings if embeddings is not None else EmbeddingSearcher(books, model_name)
+        self.name = f"Híbrido (BM25 + {Path(self.embeddings.model_name).name})"
+
+    def score(self, queries, batch=256):
+        queries = list(queries)
+        scores = np.empty((len(queries), len(self.books)), dtype=np.float32)
+        for start in range(0, len(queries), batch):  # em blocos, para não estourar a memória
+            block = queries[start:start + batch]
+            fused = 1 / (self.rrf_k + to_ranks(self.bm25.score(block)))
+            fused += 1 / (self.rrf_k + to_ranks(self.embeddings.score(block)))
+            scores[start:start + batch] = fused
+        return scores
+
+    def search(self, query, k=5):
+        scores = self.score([query])[0]
+        return self.books.iloc[top_k(scores, k)].assign(score=scores[top_k(scores, k)])
+
+
+# ---------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(description="Busca livros por uma descrição vaga.")
     parser.add_argument("query", help="descrição do livro (em inglês, por enquanto)")
-    parser.add_argument("--method", choices=["embeddings", "bm25"], default="embeddings")
+    parser.add_argument("--method", choices=["hybrid", "embeddings", "bm25"], default="hybrid")
+    parser.add_argument("--model", default=None,
+                        help="modelo de embeddings (padrão: models/minilm-livros se existir, senão o original)")
     parser.add_argument("-k", type=int, default=5, help="quantos livros mostrar")
     args = parser.parse_args()
 
+    model = args.model or (str(FINETUNED) if FINETUNED.is_dir() else DEFAULT_MODEL)
     books = load_books()
-    searcher = BM25Searcher(books) if args.method == "bm25" else EmbeddingSearcher(books)
+    if args.method == "bm25":
+        searcher = BM25Searcher(books)
+    elif args.method == "embeddings":
+        searcher = EmbeddingSearcher(books, model)
+    else:
+        searcher = HybridSearcher(books, model)
     results = searcher.search(args.query, args.k)
     print(f"\n{searcher.name} — \"{args.query}\"\n")
     for rank, row in enumerate(results.itertuples(), start=1):

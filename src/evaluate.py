@@ -12,7 +12,7 @@ Os resultados são separados por tipo de consulta:
 
 Uso (na raiz do projeto, com a .venv ativa):
     python src/evaluate.py                                  # baselines
-    python src/evaluate.py --model models/minilm-livros     # + modelo treinado
+    python src/evaluate.py --model models/minilm-livros     # + modelo treinado e híbrido
 
 Salva a tabela em results/baselines.{csv,md} (ou results/comparacao.{csv,md} com --model).
 """
@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from search import PROCESSED, BM25Searcher, EmbeddingSearcher, load_books
+from search import PROCESSED, BM25Searcher, EmbeddingSearcher, HybridSearcher, load_books
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
@@ -81,13 +81,14 @@ def main():
     queries = pd.read_parquet(PROCESSED / "queries.parquet")
     print(f"{len(books)} livros no índice, {len(queries)} consultas\n")
 
-    makers = [BM25Searcher, EmbeddingSearcher]
+    bm25 = BM25Searcher(books)
+    searchers = [bm25, EmbeddingSearcher(books)]
     if args.model:
-        makers.append(lambda b: EmbeddingSearcher(b, model_name=args.model))
+        tuned = EmbeddingSearcher(books, model_name=args.model)
+        searchers += [tuned, HybridSearcher(books, bm25=bm25, embeddings=tuned)]
 
     tables, all_ranks = [], {}
-    for make in makers:
-        searcher = make(books)
+    for searcher in searchers:
         print(f"Avaliando {searcher.name}...")
         table, ranks = evaluate(searcher, queries)
         tables.append(table)
